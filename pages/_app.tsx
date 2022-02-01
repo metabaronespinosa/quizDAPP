@@ -1,16 +1,16 @@
-import type { AppProps } from "next/app";
-import type { EmotionCache } from "@emotion/cache";
-import createCache from "@emotion/cache";
-import { CacheProvider } from "@emotion/react";
-import CssBaseline from "@mui/material/CssBaseline";
-import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import type { AppProps } from 'next/app'
+import type { EmotionCache } from '@emotion/cache'
+import createCache from '@emotion/cache'
+import { CacheProvider } from '@emotion/react'
+import CssBaseline from '@mui/material/CssBaseline'
+import ThemeProvider from '@mui/material/styles/ThemeProvider'
 
-import { theme } from "../shared/styles/theme";
-import "../styles/globals.css";
+import { theme } from '../shared/styles/theme'
+import '../styles/globals.css'
 
-let muiCache: EmotionCache | undefined = undefined;
+let muiCache: EmotionCache | undefined = undefined
 
-export const createMuiCache = () => (muiCache = createCache({ key: "mui", prepend: true }));
+export const createMuiCache = () => (muiCache = createCache({ key: 'mui', prepend: true }))
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
             </ThemeProvider>
         </CacheProvider>
-    );
+    )
 }
 
-export default MyApp;
+export default MyApp
