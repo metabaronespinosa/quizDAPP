@@ -30,7 +30,17 @@ const HomePageClient: React.FC = () => {
     if (quizTokenAdress) console.log(quizTokenAdress)
   }, [quizTokenAdress])
 
-  return <></>
+  useEffect(() => {
+    const request = async () => {
+      const response = await quizToken?.methods.balanceOf(account).call()
+
+      console.log(response)
+    }
+
+    if (quizToken) request()
+  }, [quizToken])
+
+  return <><button>Validate Quiz</button></>
 }
 
 export const HomePage: React.FC = () => {

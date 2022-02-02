@@ -4,8 +4,10 @@ import Web3 from 'web3'
 
 declare const window: any
 
+const web3Instance = (typeof window === 'undefined') ? undefined : new Web3(window.ethereum)
+
 export const useMetamask = () => {
-  const [web3] = useState<Web3>(new Web3(window.ethereum))
+  const [web3] = useState<Web3 | undefined>(web3Instance)
   const [netId, setNetId] = useState<number | undefined>()
   const [account, setAccount] = useState<string | undefined>()
   const [balance, setBalance] = useState('0')
@@ -14,12 +16,12 @@ export const useMetamask = () => {
 
   const getBlockchainData = async () => {
     try {
-      const netId = await web3.eth.net.getId()
-      const accounts = await web3.eth.getAccounts()
+      const netId = await web3?.eth.net.getId()
+      const accounts = await web3?.eth.getAccounts() || []
  
       if (!accounts.length) {
         setAccount(undefined)
-        setIsWalletConnected(true)
+        setIsWalletConnected(false)
 
         return false
       }
@@ -28,7 +30,7 @@ export const useMetamask = () => {
       
       setNetId(netId)
       setAccount(account)
-      setIsWalletConnected(false)
+      setIsWalletConnected(true)
     } catch (_e) {
       console.log(_e)
     } finally {
@@ -37,7 +39,7 @@ export const useMetamask = () => {
   }
 
   const getAccountBalance = async () => {
-    const balance = await web3.eth.getBalance(account || '')
+    const balance = await web3?.eth.getBalance(account || '') || '0'
 
     setBalance(balance)
   }
