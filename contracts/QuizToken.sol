@@ -9,34 +9,56 @@ contract QuizToken is ERC20, Ownable {
     address public tokenOwner;
     uint256 private rewardPerCorrectAnswer = 1;
     mapping(address => uint256) public userLastClaim;
-    mapping(uint256 => uint256[]) private quizzesAnswers;
+    mapping(string => string[]) private quizAnswers;
 
-    constructor(uint256 initialSupply) ERC20("QuizToken", "QUIZ") {
+    // In case we want to restrict Quizzes resolution just once
+    // mapping(address => string[]) private userQuizzesResolved;
+
+    constructor(
+        uint256 initialSupply,
+        string memory sampleQuizId,
+        string[] memory sampleQuizAnswers
+    ) ERC20("QuizToken", "QUIZ") {
         _mint(msg.sender, initialSupply * 10**decimals());
+
+        quizAnswers[sampleQuizId] = sampleQuizAnswers;
 
         tokenOwner = msg.sender;
     }
 
-    function submitForm(uint256 quizId, uint256[] memory responses) public {
-        require(userLastClaim[msg.sender] > 1 days, "Only one claim every 24 hours.");
+    function submitQuiz(string memory quizId, string[] memory answers) public returns (bool) {
+        require(
+            userLastClaim[msg.sender] == 0 || userLastClaim[msg.sender] + 1 days < block.timestamp - 1 days,
+            "Claim only available once every 24 hours."
+        );
 
-        uint256 quizLength = quizzesAnswers[quizId].length;
+        uint256 quizLength = quizAnswers[quizId].length;
         uint256 claimable = 0;
 
         for (uint256 i = 0; i < quizLength; i++) {
-            if (responses[i] == quizzesAnswers[quizId][i]) {
+            if (keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked(quizAnswers[quizId][i]))) {
                 claimable = claimable + rewardPerCorrectAnswer;
             }
         }
 
-        transfer(msg.sender, claimable * 10**decimals());
+        if (claimable > 0) {
+            _mint(msg.sender, claimable * 10**decimals());
+
+            userLastClaim[msg.sender] = block.timestamp;
+        }
+
+        return true;
     }
 
     function setRewardPerCorrectAnswer(uint256 amount) public onlyOwner {
         rewardPerCorrectAnswer = amount;
     }
 
-    function createNewQuiz(uint256 quizId, uint256[] memory correctAnswers) public onlyOwner {
-        quizzesAnswers[quizId] = correctAnswers;
+    function createNewQuiz(string memory quizId, string[] memory correctAnswers) public onlyOwner {
+        quizAnswers[quizId] = correctAnswers;
+    }
+
+    function getQuizAnswers(string memory quizId) public view returns (string[] memory anwsers) {
+        return quizAnswers[quizId];
     }
 }

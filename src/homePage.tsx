@@ -40,7 +40,18 @@ const HomePageClient: React.FC = () => {
     if (quizToken) request()
   }, [quizToken])
 
-  return <><button>Validate Quiz</button></>
+  const submitQuiz = async () => {
+    // const response = await quizToken?.methods.getQuizAnswers('sampleSurvey').call()
+    // console.log(response)
+    const response = await quizToken?.methods.submitQuiz(
+      'sampleSurvey',
+      ['option2', 'option1', 'option3']
+    ).send({ from: account })
+
+    console.log(response)
+  }
+
+  return <><button onClick={() => submitQuiz()}>Validate Quiz</button></>
 }
 
 export const HomePage: React.FC = () => {
