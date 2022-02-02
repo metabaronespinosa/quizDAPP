@@ -11,6 +11,8 @@ contract QuizToken is ERC20, Ownable {
     mapping(address => uint256) public userLastClaim;
     mapping(string => string[]) private quizAnswers;
 
+    event QuizResult(address indexed _from, uint256 _reward);
+
     // In case we want to restrict Quizzes resolution just once
     // mapping(address => string[]) private userQuizzesResolved;
 
@@ -28,8 +30,8 @@ contract QuizToken is ERC20, Ownable {
 
     function submitQuiz(string memory quizId, string[] memory answers) public returns (bool) {
         require(
-            userLastClaim[msg.sender] == 0 || userLastClaim[msg.sender] + 1 days < block.timestamp - 1 days,
-            "Claim only available once every 24 hours."
+            userLastClaim[msg.sender] == 0 || userLastClaim[msg.sender] + 3 minutes < block.timestamp - 3 minutes,
+            "Claim only available once every 3 minutes."
         );
 
         uint256 quizLength = quizAnswers[quizId].length;
@@ -47,6 +49,8 @@ contract QuizToken is ERC20, Ownable {
             userLastClaim[msg.sender] = block.timestamp;
         }
 
+        emit QuizResult(msg.sender, claimable);
+
         return true;
     }
 
@@ -58,7 +62,7 @@ contract QuizToken is ERC20, Ownable {
         quizAnswers[quizId] = correctAnswers;
     }
 
-    function getQuizAnswers(string memory quizId) public view returns (string[] memory anwsers) {
+    function getQuizAnswers(string memory quizId) public view onlyOwner returns (string[] memory anwsers) {
         return quizAnswers[quizId];
     }
 }
