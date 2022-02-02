@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
 
+import NavBar from './components/NavBar'
 import { makeStyles } from '../shared/styles/makeStyles'
 import useMetamask from './hooks/useMetamask'
 import useQuizContract from './hooks/useQuizContract'
+
 
 const useStyles = makeStyles()(theme => ({
   homePage: {
@@ -14,44 +13,13 @@ const useStyles = makeStyles()(theme => ({
   }
 }))
 
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}))
 
-const NavBar = () => {
-  return <Grid
-    container
-    sx={{
-      boxShadow: '0px 2px 8px rgba(2, 18, 21, 0.1)'
-    }}
-  >
-    <Grid item xs>
-      <Item elevation={0}>Rather Labs Quiz Test</Item>
-    </Grid>
-    <Grid item xs={6}>
-      <Item elevation={0} />
-    </Grid>
-    <Grid item xs>
-      <Item elevation={0}>connect</Item>
-    </Grid>
-  </Grid>
-}
-const MainContent = () => null
+
+const QuizWizard = () => null
 
 const HomePageClient: React.FC = () => {
-  const {
-    isWalletConnected,
-    connectWallet,
-    account
-  } = useMetamask()
+  const { account } = useMetamask()
   const { quizToken, quizTokenAdress } = useQuizContract()
-  
-  useEffect(() => {
-    if (!isWalletConnected) connectWallet()
-  }, [isWalletConnected])
 
   useEffect(() => {
     if (account) console.log(account)
@@ -96,7 +64,7 @@ const HomePageClient: React.FC = () => {
     padding: '16px'
   }}>
     <NavBar />
-    <MainContent />
+    <QuizWizard />
   </Box>
 }
 
