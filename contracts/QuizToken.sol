@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract QuizToken is ERC20 {
     address public tokenOwner;
+    uint256 private rewardPerAnswer = 1;
     mapping(address => uint256) public userLastClaim;
     mapping(uint256 => uint256[]) private quizzesResponses;
 
@@ -23,7 +24,7 @@ contract QuizToken is ERC20 {
 
         for (uint256 i = 0; i < quizLength; i++) {
             if (responses[i] == quizzesResponses[quizId][i]) {
-                claimable++;
+                claimable = claimable + rewardPerAnswer;
             }
         }
 
