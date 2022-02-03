@@ -46,7 +46,7 @@ const QuizResult: React.FC<{
           {parsedReward > 0 ? `Congrats, you just received ${parsedReward}` : 'Good Luck next time! :('}
         </ListItem>
         <ListItem autoFocus button>
-          <Button onClick={() => setOpenDialog(false)}>Ok</Button>
+          <Button onClick={() => location.reload()}>Ok</Button>
         </ListItem>
       </List>
     </Dialog>
@@ -93,7 +93,7 @@ const OverView: React.FC<Props & {
       setTransactionSent(true)
 
     } catch(e) {
-      console.log(e)
+      if ((e as any).code === 4001) setLoadingResult(false)
     }
   }
 

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 
 import NavBar from './components/NavBar'
+import Alert from './components/Alert'
 import QuizWizard from './components/QuizWizard'
-import { makeStyles } from '../shared/styles/makeStyles'
 
+import { makeStyles } from '../shared/styles/makeStyles'
 
 const useStyles = makeStyles()(theme => ({
   homePage: {
@@ -13,15 +14,18 @@ const useStyles = makeStyles()(theme => ({
 }))
 
 const HomePageClient: React.FC = () => {
-  return <Box sx={{
-    width: '100%',
-    height: '100vh',
-    background: '#f2f2f2',
-    padding: '16px'
-  }}>
-    <NavBar />
-    <QuizWizard />
-  </Box>
+  return <>
+    <Box sx={{
+      width: '100%',
+      height: '100vh',
+      background: '#f2f2f2',
+      padding: '16px'
+    }}>
+      <NavBar />
+      <QuizWizard />
+      <Alert />
+    </Box>
+  </>
 }
 
 export const HomePage: React.FC = () => {

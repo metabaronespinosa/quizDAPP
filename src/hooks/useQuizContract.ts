@@ -16,14 +16,14 @@ const useQuizContract = () => {
   const [quizToken, setQuizToken] = useState<Contract | undefined>()
   const [quizTokenAdress, setQuizTokenAddress] = useState<string | undefined>()
 
-  const { web3, netId } = useMetamask()
-  const depthsDefined = typeof web3 !== 'undefined' && typeof netId !== 'undefined'
+  const { web3, chainId } = useMetamask()
+  const depthsDefined = typeof web3 !== 'undefined' && typeof chainId !== 'undefined'
 
   useEffect(() => {
     if (!depthsDefined) return
 
     try {
-      const network =  (QuizToken.networks as any)[netId] as Network
+      const network =  (QuizToken.networks as any)[chainId] as Network
       const token = new web3.eth.Contract(
         QuizToken.abi as AbiItem[],
         network.address
