@@ -29,9 +29,10 @@ contract QuizToken is ERC20, Ownable {
     }
 
     function submitQuiz(string memory quizId, string[] memory answers) public returns (bool) {
+        // Claim can be limited to minutes, hours or even days...
         require(
-            userLastClaim[msg.sender] == 0 || userLastClaim[msg.sender] + 3 minutes < block.timestamp - 3 minutes,
-            "Claim only available once every 3 minutes."
+            userLastClaim[msg.sender] == 0 || userLastClaim[msg.sender] + 1 minutes < block.timestamp - 1 minutes,
+            "Claim only available once every 1 minutes."
         );
 
         uint256 quizLength = quizAnswers[quizId].length;

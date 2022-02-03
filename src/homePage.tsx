@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 
 import NavBar from './components/NavBar'
+import QuizWizard from './components/QuizWizard'
 import { makeStyles } from '../shared/styles/makeStyles'
 import useMetamask from './hooks/useMetamask'
 import useQuizContract from './hooks/useQuizContract'
@@ -13,17 +14,9 @@ const useStyles = makeStyles()(theme => ({
   }
 }))
 
-
-
-const QuizWizard = () => null
-
 const HomePageClient: React.FC = () => {
   const { account } = useMetamask()
   const { quizToken, quizTokenAdress } = useQuizContract()
-
-  useEffect(() => {
-    if (account) console.log(account)
-  }, [account])
 
   useEffect(() => {
     if (quizTokenAdress) console.log(quizTokenAdress)
@@ -54,8 +47,6 @@ const HomePageClient: React.FC = () => {
 
     console.log(response)
   }
-
-  // return <><button onClick={() => submitQuiz()}>Validate Quiz</button></>
 
   return <Box sx={{
     width: '100%',
