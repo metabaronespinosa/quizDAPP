@@ -6,7 +6,9 @@ import QuestionCard from './QuestionCard'
 
 const quizEndpoint = '/quiz.json'
 
-const Quiz: React.FC<Props> = ({ onNext, next }) => {
+const Quiz: React.FC<Props & {
+  onQuizCompleted: (q: Question[] | undefined) => void
+}> = ({ onNext, next, onQuizCompleted }) => {
   const [questions, setQuestions] = useState<Question[] | undefined>()
   const [quizTitle, setQuizTitle] = useState<string | undefined>()
   const [displayQuestion, setDisplayQuestion] = useState(0)
@@ -38,8 +40,11 @@ const Quiz: React.FC<Props> = ({ onNext, next }) => {
   }
   
   useEffect(() => {
-    if (displayQuestion === questionsLength)
+    if (displayQuestion === questionsLength) {
+      onQuizCompleted(questions)
+
       onNext(next)
+    }
   }, [displayQuestion, questionsLength])
   
   return <>

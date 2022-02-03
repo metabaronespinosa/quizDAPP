@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Web3 from 'web3'
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 
 import useMetamask from '../hooks/useMetamask'
+import useQuizContract from '../hooks/useQuizContract'
 
 const parseAddress = (a: string) => {
   return `${a.substring(0, 5)}...${a.substring(a.length, a.length - 3)}`
@@ -20,11 +22,28 @@ const Item = styled(Paper)(({ theme }) => ({
 }))
 
 const NavBar = () => {
+  const [balance, setBalance] = useState<string | undefined>()
+  const [tokenSymbol, setTokenSymbol] = useState<string | undefined>()
   const {
     isWalletConnected,
     connectWallet,
     account
   } = useMetamask()
+  const { quizToken } = useQuizContract()
+
+  useEffect(() => {
+    if (quizToken) {
+      const request = async() => {
+        const tokenNameResponse = await quizToken.methods.symbol().call()
+        const response = await quizToken.methods.balanceOf(account).call()
+
+        setTokenSymbol(tokenNameResponse)
+        setBalance(Web3.utils.fromWei(response, 'ether'))
+      }
+
+      request()
+    }
+  }, [quizToken])
   
   return <Grid
     container
@@ -36,7 +55,7 @@ const NavBar = () => {
       <Item elevation={0}>Rather Labs Quiz Test</Item>
     </Grid>
     <Grid item xs={6}>
-      <Item elevation={0} />
+      <Item elevation={0}>{balance ? `$${tokenSymbol} Balance: ${balance}` : null}</Item>
     </Grid>
     <Grid item xs>
       <Item elevation={0} sx={{
