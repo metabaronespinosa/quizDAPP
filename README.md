@@ -1,8 +1,8 @@
-# NextJS + MaterialUI V5 Template
+# $QUIZ DAPP
 
--   This is a template for Next JS apps with Typescript and MUI v5.
+-   
 
 ## Setup
 
--   Install dependencies: `npm i`
--   Run the server: `npm run dev`
+-   Install dependencies: `yarn i`
+-   Run dev server: `yarn dev`
