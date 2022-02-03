@@ -29,12 +29,10 @@ const NavBar = () => {
   const {
     isWalletConnected,
     connectWallet,
-    account
+    account,
+    isNetworkRopsten
   } = useMetamask()
   const { quizToken } = useQuizContract()
-  const state = useAlertState(AlertState)
-  const { message } = state
-  const switchRopsten = message.get() === WRONG_NETWORK
 
   useEffect(() => {
     if (quizToken) {
@@ -77,7 +75,7 @@ const NavBar = () => {
         >
             connect wallet
         </Button>}
-        {!switchRopsten && isWalletConnected && <Button
+        {isNetworkRopsten && isWalletConnected && <Button
           disableElevation
           variant='contained'
           sx={{ height: '25px', width: '150px', fontSize: 12 }}
@@ -85,7 +83,7 @@ const NavBar = () => {
         >
           {account && parseAddress(account)}
         </Button>}
-        {switchRopsten && <Button
+        {!isNetworkRopsten && <Button
           disableElevation
           variant='contained'
           sx={{ height: '25px', width: '150px', fontSize: 12 }}

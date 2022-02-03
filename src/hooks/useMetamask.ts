@@ -113,7 +113,8 @@ export const useMetamask = () => {
     isWalletConnected,
     connectWallet,
     loading,
-    setError
+    setError,
+    isNetworkRopsten: chainId === ROPSTEN
   }
 }
 
