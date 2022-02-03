@@ -4,7 +4,7 @@ import { Props } from './'
 import { Question } from './'
 import QuestionCard from './QuestionCard'
 
-const quizEndpoint = '/quiz.json'
+const quizEndpoint = '/quizDAPP/quiz.json'
 
 const Quiz: React.FC<Props & {
   onQuizCompleted: (q: Question[] | undefined) => void
