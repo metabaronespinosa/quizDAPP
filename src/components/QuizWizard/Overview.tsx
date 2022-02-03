@@ -4,42 +4,105 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Paper from '@mui/material/Paper'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
+import DialogTitle from '@mui/material/DialogTitle'
+import Dialog from '@mui/material/Dialog'
 
 import useMetamask from '../../hooks/useMetamask'
 import useQuizContract from '../../hooks/useQuizContract'
 import { Props, Question } from './'
 
-const OverView: React.FC<Props & {
-    quizCompleted?: Question[]
-  }> = ({
-    onNext,
-    next,
-    quizCompleted
-  }) => {
-    const { account } = useMetamask()
-    const { quizToken } = useQuizContract()
-  
-    useEffect(() => {  
-      if (quizToken) {
-        quizToken?.events.QuizResult({
-          filter: { _from: account },
-          fromBlock: 0
-        }, (e: any, ev: any) => console.log(e, ev.returnValues._reward))
-      }
-    }, [quizToken])
-  
-    const submitQuiz = async () => {
-      try {
-        await quizToken?.methods.submitQuiz(
-          'sampleSurvey',
-          ['option2', 'option1', 'option3']
-        ).send({ from: account })
-      } catch(e) {
-        console.log(e)
-      }
-    }
+// This should be obtained from some kind of BE (API, Blockchain)
+const DAILY_QUIZ = 'sampleSurvey'
 
-    return <Paper><List>
+const QuizResult: React.FC<{
+  loading: boolean,
+  reward?: string
+}> = ({
+  loading,
+  reward
+}) => {
+  const [openDialog, setOpenDialog] = useState<boolean>(false)
+  const parsedReward = parseFloat(reward || '0')
+
+  useEffect(() => {
+    if (parsedReward > 0) setOpenDialog(true)
+  }, [parsedReward])
+
+  return <>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={loading}
+    >
+      <CircularProgress color='inherit' />
+    </Backdrop>
+    <Dialog
+      open={!loading && Boolean(reward) && openDialog}
+    >
+      <DialogTitle>Quiz result:</DialogTitle>
+      <List sx={{ pt: 0 }}>
+        <ListItem autoFocus button>
+          {parsedReward > 0 ? `Congrats, you just received ${parsedReward}` : 'Good Luck next time! :('}
+        </ListItem>
+        <ListItem autoFocus button>
+          <Button onClick={() => setOpenDialog(false)}>Ok</Button>
+        </ListItem>
+      </List>
+    </Dialog>
+  </>
+}
+
+const OverView: React.FC<Props & {
+  quizCompleted?: Question[]
+}> = ({
+  onNext,
+  next,
+  quizCompleted
+}) => {
+  const { account } = useMetamask()
+  const { quizToken } = useQuizContract()
+  const [reward, setReward] = useState<string | undefined>()
+  const [loadingResult, setLoadingResult] = useState<boolean>(false)
+  const [transactionSent, setTransactionSent] = useState<boolean>(false)
+  
+  useEffect(() => {
+    if (transactionSent) {
+      quizToken?.events.QuizResult({
+        filter: { _from: account },
+        fromBlock: 0
+      }, (_e: any, ev: any) => {
+        setLoadingResult(false)
+
+        setReward(ev.returnValues._reward)
+      })
+    }
+  }, [transactionSent])
+  
+  const submitQuiz = async () => {
+    if (!quizCompleted) return
+
+    setLoadingResult(true)
+
+    try {
+      await quizToken?.methods.submitQuiz(
+        DAILY_QUIZ,
+        quizCompleted?.map((q: Question) => q.answer)
+      ).send({ from: account })
+
+      setTransactionSent(true)
+
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
+  return <>
+    <QuizResult
+      loading={loadingResult}
+      reward={reward}
+    />
+    <Paper><List>
       <ListItem>
         <ListItemText
           primary='Quiz Overview'
@@ -61,7 +124,7 @@ const OverView: React.FC<Props & {
         <Button
           variant='contained'
           onClick={() => {
-            //  onNext(next)
+          //  onNext(next)
             submitQuiz()
           }}
           size='small'
@@ -71,6 +134,7 @@ const OverView: React.FC<Props & {
       </ListItem>
     </List>
     </Paper>
-  }
+  </>
+}
 
 export default OverView
