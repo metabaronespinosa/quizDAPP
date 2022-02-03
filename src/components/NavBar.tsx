@@ -96,7 +96,7 @@ const NavBar = () => {
         >
           {account && parseAddress(account)}
         </Button>}
-        {!isNetworkRopsten && <Button
+        {!isNetworkRopsten && isWalletConnected && <Button
           disableElevation
           variant='contained'
           sx={{ height: '25px', width: '150px', fontSize: 12 }}

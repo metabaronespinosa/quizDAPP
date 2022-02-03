@@ -46,7 +46,13 @@ const QuizResult: React.FC<{
           {parsedReward > 0 ? `Congrats, you just received ${parsedReward}` : 'Good Luck next time! :('}
         </ListItem>
         <ListItem button>
-          <Button onClick={() => location.reload()}>Ok</Button>
+          <Button onClick={() => {
+            setOpenDialog(false)
+
+            setTimeout(() => {
+              location.reload()
+            }, 10000)
+          }}>Ok</Button>
         </ListItem>
       </List>
     </Dialog>
