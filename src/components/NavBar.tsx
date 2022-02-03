@@ -32,17 +32,32 @@ const NavBar = () => {
   } = useMetamask()
   const { quizToken } = useQuizContract()
 
+  const getBalance = async () => {
+    if (!quizToken) return
+
+    const balance = await quizToken.methods.balanceOf(account).call()
+
+    setBalance(Web3.utils.fromWei(balance, 'ether'))
+  }
+
   useEffect(() => {
     if (quizToken) {
       const request = async() => {
         const tokenNameResponse = await quizToken.methods.symbol().call()
-        const response = await quizToken.methods.balanceOf(account).call()
-
+        
         setTokenSymbol(tokenNameResponse)
-        setBalance(Web3.utils.fromWei(response, 'ether'))
+
+        await getBalance()
       }
 
       request()
+
+      quizToken.events.Transfer({
+        filter: { to: account },
+        fromBlock: 0
+      }, () => {
+        getBalance()
+      })
     }
   }, [quizToken])
   

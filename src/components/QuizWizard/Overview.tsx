@@ -42,10 +42,10 @@ const QuizResult: React.FC<{
     >
       <DialogTitle>Quiz result:</DialogTitle>
       <List sx={{ pt: 0 }}>
-        <ListItem autoFocus button>
+        <ListItem button>
           {parsedReward > 0 ? `Congrats, you just received ${parsedReward}` : 'Good Luck next time! :('}
         </ListItem>
-        <ListItem autoFocus button>
+        <ListItem button>
           <Button onClick={() => location.reload()}>Ok</Button>
         </ListItem>
       </List>
