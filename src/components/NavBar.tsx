@@ -4,10 +4,8 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import { useState as useAlertState } from '@hookstate/core'
 
-import { AlertState } from './Alert'
-import useMetamask, { WRONG_NETWORK } from '../hooks/useMetamask'
+import useMetamask from '../hooks/useMetamask'
 import useQuizContract from '../hooks/useQuizContract'
 
 const parseAddress = (a: string) => {

@@ -14,28 +14,28 @@ export const AlertState = createState<AlertStateProps>({
 
 const Alert = () => {
   const [open, setOpen] = React.useState(false)
-  const [lastMessage, setLastMessage] = React.useState<string | undefined>()
+  const [lastMessage, setLastMessage] = React.useState('')
   const state = useState<AlertStateProps>(AlertState)
   const { type, message } = state.get()
 
   useEffect(() => {
-    if (lastMessage === message) {
-      setOpen(false)
+    if (message.length) {
+      setLastMessage(message)
+      setOpen(true)
 
-      setTimeout(() => setLastMessage(undefined), 300)
+      setTimeout(() => {
+        state.set({ type, message: '' })
+      }, 300)
     }
-  }, [lastMessage])
-
-  useEffect(() => {
-    if (!lastMessage?.length && message?.length && !open) setOpen(true) 
-  }, [message, open])
+  }, [message])
 
   if (!open) return null
 
   return <>
     <AlertMui
       onClose={() => {
-        setLastMessage(message)
+        setOpen(false)
+        setLastMessage('')
       }}
       sx={{
         position: 'absolute',
@@ -44,7 +44,7 @@ const Alert = () => {
       }}
       severity={type as unknown as AlertColor}
     >
-      {message}
+      {lastMessage}
     </AlertMui>
   </>
 }

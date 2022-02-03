@@ -60,7 +60,7 @@ const OverView: React.FC<Props & {
   next,
   quizCompleted
 }) => {
-  const { account } = useMetamask()
+  const { account, setError } = useMetamask()
   const { quizToken } = useQuizContract()
   const [reward, setReward] = useState<string | undefined>()
   const [loadingResult, setLoadingResult] = useState<boolean>(false)
@@ -93,7 +93,9 @@ const OverView: React.FC<Props & {
       setTransactionSent(true)
 
     } catch(e) {
-      if ((e as any).code === 4001) setLoadingResult(false)
+      setLoadingResult(false)
+
+      setError(e)
     }
   }
 
