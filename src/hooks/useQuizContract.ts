@@ -3,7 +3,7 @@ import { Contract } from 'web3-eth-contract'
 import { AbiItem } from 'web3-utils'
 
 import QuizToken from '../../build/contracts/QuizToken.json'
-import useMetamask from './useMetamask'
+import useMetamask, { ROPSTEN, WRONG_NETWORK } from './useMetamask'
 
 type Network = {
   events: any
@@ -16,7 +16,7 @@ const useQuizContract = () => {
   const [quizToken, setQuizToken] = useState<Contract | undefined>()
   const [quizTokenAdress, setQuizTokenAddress] = useState<string | undefined>()
 
-  const { web3, chainId } = useMetamask()
+  const { web3, chainId, setError } = useMetamask()
   const depthsDefined = typeof web3 !== 'undefined' && typeof chainId !== 'undefined'
 
   useEffect(() => {
@@ -33,7 +33,9 @@ const useQuizContract = () => {
       setQuizToken(token)
       setQuizTokenAddress(quizTokenAddress)
     } catch(e) {
-      console.log('Contracts not deployed...', e)
+      setError({
+        message: chainId === ROPSTEN ? 'Contracts not deployed...' : WRONG_NETWORK
+      })
     }
   }, [depthsDefined])
 

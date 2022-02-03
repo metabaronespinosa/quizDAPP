@@ -8,7 +8,9 @@ declare const window: any
 
 const web3Instance = (typeof window === 'undefined') ? undefined : new Web3(window.ethereum)
 
-const ROPSTEN_HEX = '0x3'
+export const ROPSTEN_HEX = '0x3'
+export const ROPSTEN = 3
+export const WRONG_NETWORK = 'Wrong network, please switch to Ropsten'
 
 export const useMetamask = () => {
   const [web3] = useState<Web3 | undefined>(web3Instance)
@@ -37,7 +39,12 @@ export const useMetamask = () => {
         setNetId(netId)
         setAccount(undefined)
         setIsWalletConnected(false)
-        
+
+        alertState.set({
+          type: 'warning',
+          message: 'Please connect Metamask!'
+        })
+
         return false
       }
       
@@ -61,7 +68,7 @@ export const useMetamask = () => {
 
   const connectWallet = async () => {
     try {
-      if (netId === 3) {
+      if (netId === ROPSTEN || chainId === ROPSTEN) {
         await window.ethereum.request({ method: 'eth_requestAccounts' })
 
         return
@@ -80,17 +87,8 @@ export const useMetamask = () => {
     if (web3 && web3.eth) getBlockchainData()
 
     const accountsListener = () => getBlockchainData()
-    const networkListener = async (networkId: string) => {
-      if (networkId === ROPSTEN_HEX) {
-        try {
-          await window.ethereum.request({ method: 'eth_requestAccounts' })
-        } catch (e) { setError(e) }
-      } else {
-        alertState.set({
-          type: 'error',
-          message: 'Wrong network, please switch to Ropsten'
-        })
-      }
+    const networkListener = async () => {
+      setTimeout(() => location.reload(), 800)
     }
 
     window.ethereum.on('accountsChanged', accountsListener)

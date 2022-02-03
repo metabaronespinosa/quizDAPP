@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { createState, useState } from '@hookstate/core'
 import AlertMui, { AlertColor } from '@mui/material/Alert'
-import Button from '@mui/material/Button'
 
 type AlertStateProps = {
   type: AlertColor

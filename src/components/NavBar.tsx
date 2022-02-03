@@ -4,8 +4,10 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
+import { useState as useAlertState } from '@hookstate/core'
 
-import useMetamask from '../hooks/useMetamask'
+import { AlertState } from './Alert'
+import useMetamask, { WRONG_NETWORK } from '../hooks/useMetamask'
 import useQuizContract from '../hooks/useQuizContract'
 
 const parseAddress = (a: string) => {
@@ -30,6 +32,9 @@ const NavBar = () => {
     account
   } = useMetamask()
   const { quizToken } = useQuizContract()
+  const state = useAlertState(AlertState)
+  const { message } = state
+  const switchRopsten = message.get() === WRONG_NETWORK
 
   useEffect(() => {
     if (quizToken) {
@@ -72,13 +77,21 @@ const NavBar = () => {
         >
             connect wallet
         </Button>}
-        {isWalletConnected && <Button
+        {!switchRopsten && isWalletConnected && <Button
           disableElevation
           variant='contained'
           sx={{ height: '25px', width: '150px', fontSize: 12 }}
           onClick={() => {}}
         >
           {account && parseAddress(account)}
+        </Button>}
+        {switchRopsten && <Button
+          disableElevation
+          variant='contained'
+          sx={{ height: '25px', width: '150px', fontSize: 12 }}
+          onClick={() => connectWallet()}
+        >
+          go Ropsten
         </Button>}
       </Item>
     </Grid>
