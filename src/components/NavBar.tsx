@@ -55,8 +55,8 @@ const NavBar = () => {
       quizToken.events.Transfer({
         filter: { to: account },
         fromBlock: 0
-      }, () => {
-        getBalance()
+      }, async () => {
+        await getBalance()
       })
     }
   }, [quizToken])
